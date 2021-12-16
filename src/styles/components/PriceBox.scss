@@ -1,4 +1,32 @@
 .price {
+  &__box-buy {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  &__btn-buy {
+    padding: 16px;
+    border-color: transparent;
+    cursor: pointer;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    box-sizing: border-box;
+    font-size: 16px;
+    line-height: 1.5;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    border-radius: 16px;
+    background-color: #fff;
+    color: #4bcfa0;
+    transition: background-color 250ms cubic-bezier(0.4, 0, 0.2, 1),
+      color 250ms cubic-bezier(0.4, 0, 0.2, 1);
+
+    &:hover,
+    &:focus {
+      background-color: #4bcfa0;
+      color: #fff;
+    }
+  }
+
   &__box {
     display: flex;
     align-items: center;

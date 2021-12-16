@@ -54,13 +54,13 @@ export default function CardsList({ products, openModal }) {
                     price={price}
                     onClick={openModal}
                   />
-                  <button
+                  {/* <button
                     className="cards__btn"
                     type="button"
                     onClick={(e) => openModal({ name, category, price })}
                   >
                     Buy
-                  </button>
+                  </button> */}
                 </li>
               )
             })}
