@@ -1,0 +1,22 @@
+.price {
+  &__box {
+    display: flex;
+    align-items: center;
+  }
+
+  &__sign {
+    font-size: 30px;
+    line-height: 1.17;
+    letter-spacing: -0.02em;
+
+    color: #000000;
+  }
+  &__worth {
+    margin-left: 4px;
+    font-size: 60px;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+
+    color: #000000;
+  }
+}
