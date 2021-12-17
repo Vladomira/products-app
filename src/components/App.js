@@ -1,4 +1,3 @@
-// import { Route, Switch } from 'react-router-dom'
 import { useState, useEffect, lazy, Suspense } from 'react'
 import { toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
@@ -15,54 +14,48 @@ import '../styles/index.scss'
 function App() {
   const [showModal, setShowModal] = useState(false)
   const [selectedProduct, setSelectedProduct] = useState({})
-  const [nameError, setNameError] = useState('')
-  const [numberError, setNumberError] = useState('')
+  const [nameError, setNameError] = useState(false)
+  const [numberError, setNumberError] = useState(false)
+  const [quantityNumberError, setQuantityNumberError] = useState(false)
   const [userData, setUserData] = useState({ name: '', number: '' })
 
-  function isCorrectNumber(number) {
-    const numberArr = number.split('')
-    const x = numberArr.map((el) => {
-      console.log(el.charCodeAt())
-      if (el.charCodeAt() < 48 || el.charCodeAt() > 57) {
-        return setNumberError('Only numbers allowed')
-      }
-    })
-    return x
-    // if (number.charCodeAt() <= 47 && number.charCodeAt() >= 58) {
-    //   setNumberError('Only numbers allowed')
-    //   return
-    // }
+  const charactersQuantity = (number, quantity, setError) => {
+    if (number.length < quantity || number.length > quantity) {
+      toast.error('Please type corrrect number')
+      setError(true)
+      return
+    } else {
+      setError(false)
+      // return
+    }
   }
+  // console.log(quantityNumberError, 'bef')
   const submitForm = (name, number) => {
     if (!name) {
       setNameError('This field in required')
       return
     }
     if (!number) {
-      setNumberError('This field in required')
-      return
-    }
-    isCorrectNumber(number)
-    if (number.length < 12 || number.length > 12) {
-      setNumberError('Should contain 12 characters')
-      return
-    }
-    if (number.charCodeAt() <= 47 && number.charCodeAt() >= 58) {
-      setNumberError('Only numbers allowed')
+      setNumberError(true)
       return
     }
 
-    setUserData({ name, number })
-    toast.success(`${name} and ${number} are registered`)
-    console.log('Name:', name)
-    console.log('Number:', number)
+    charactersQuantity(number, 12, setQuantityNumberError)
+    //&& quantityNumberError === false
+    // console.log(quantityNumberError, 'after')
+    if (!nameError && !numberError) {
+      setUserData({ name, number })
+      toast.success(`${name} and ${number} are registered`)
+      console.log('Name:', name)
+      console.log('Number:', number)
+    }
 
-    reset()
+    // reset()
   }
-  const reset = () => {
-    setNameError(null)
-    setNumberError(null)
-  }
+  // const reset = () => {
+  //   setNameError(false)
+  //   setNumberError(false)
+  // }
   const toggleModal = (prop) => {
     setShowModal(!showModal)
     setSelectedProduct(prop)
@@ -80,6 +73,7 @@ function App() {
               onSubmit={submitForm}
               nameError={nameError}
               numberError={numberError}
+              quantityNumberError={quantityNumberError}
             />
           </Modal>
         )}
@@ -90,39 +84,3 @@ function App() {
   )
 }
 export default App
-// if (name.charCodeAt() >= 33 && name.charCodeAt() <= 64) {
-//   setNameError('Only letters allowed')
-//   console.log(true)
-//   return
-// }
-
-///
-
-// const isCorrectName = (data) => {
-//   const dataArr = data.split('')
-//   // console.log(dataArr)
-//   const wrongData = dataArr.map((el) => {
-//     console.log(el.charCodeAt())
-//     // if (data.charCodeAt() >= 33 && data.charCodeAt() <= 64) {
-//     //   setNameError('Only letters allowed')
-//     //   console.log(true)
-//     // }
-//     if (el.charCodeAt() <= 64 && el.charCodeAt() >= 33) {
-//       //&& el.charCodeAt() >= 33
-
-//       console.log(true)
-//       setNameError('Only letters allowed')
-//       //  return
-//     }
-//   })
-//   return toast.error(`${data} is wrong. Try again`)
-// }
-// const isCorrectNumber = (number) => {
-//   // 48-57
-//   if (number.charCodeAt() <= 47 && number.charCodeAt() === 58) {
-//     // &&
-//     setNumberError('Only numbers allowed')
-//     console.log(true)
-//     return
-//   }
-// }

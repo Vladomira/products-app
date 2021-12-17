@@ -27,7 +27,7 @@ export default function Modal({ onClose, children }) {
   return createPortal(
     <div className="modal__backdrop" onClick={handleBackdropClick}>
       <div className="modal__box">
-        <button type="button" onClick={onClose} className="modal__btn">
+        <button type="button" onClick={onClose} className="close__btn">
           <img alt="" src={closeImg} className="close__img" />
         </button>
         {children}

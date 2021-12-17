@@ -54,20 +54,13 @@ export default function CardsList({ products, openModal }) {
                     price={price}
                     onClick={openModal}
                   />
-                  {/* <button
-                    className="cards__btn"
-                    type="button"
-                    onClick={(e) => openModal({ name, category, price })}
-                  >
-                    Buy
-                  </button> */}
                 </li>
               )
             })}
         </ul>
         <button
           type="button"
-          className="products__button"
+          className="button__cheapest button"
           onClick={() => openModal(lowPriceItem)}
         >
           Buy cheapest
@@ -76,9 +69,3 @@ export default function CardsList({ products, openModal }) {
     </section>
   )
 }
-// const res = { name: normalizeName, category: products.category }
-// console.log(normalizeName, 'normalizeName')
-// return res
-// return setData([
-//   { name: normalizeName, ...products.category, ...products.price },
-// ])

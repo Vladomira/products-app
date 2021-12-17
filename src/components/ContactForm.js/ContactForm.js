@@ -1,62 +1,64 @@
 import { useEffect, useState } from 'react'
-import { toast } from 'react-toastify'
+import ErrorComponent from '../ErrorComponent/ErrorComponent'
 import PropTypes from 'prop-types'
+import rightArrow from '../../images/arrow-right.png'
+import errorImg from '../../images/error.png'
 
-/* Поле **Name**
-  - Считается невалидным, если осталось незаполненным. Текст ошибки: "This field in required"
-  - Должно содержать только буквы. Текст ошибки: "Only letters allowed"
-*/
-export default function ContactForm({ onSubmit, nameError, numberError }) {
+export default function ContactForm({ ...props }) {
+  const { onSubmit, nameError, numberError, quantityNumberError } = props
   const [name, setName] = useState('')
   const [number, setNumber] = useState('')
-  const [error, setError] = useState('')
-  const handleChange = (e) => {
-    const { name, value } = e.currentTarget
-    // console.log(value.charCodeAt(), 'name')
-    // if (value.charCodeAt() <= 64 && value.charCodeAt() >= 33) {
-    //   // setError('Only letters allowed')
-    //   toast.error(`${value} is wrong. Try again`)
-    //   return
-    // }
+  const [nameTuched, setNameTouched] = useState(false)
+  const [numberTuched, setNumberTouched] = useState(false)
+  const [wrong, setWrong] = useState(false)
+
+  const errorMesssage = () => 'This field in required'
+  const controlName = (value) => {
+    const res =
+      /^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$/.test(
+        String(value)
+      )
+    return res
+  }
+  const blureHandler = (e) => {
+    const { name, value } = e.target
 
     switch (name) {
       case 'name':
-        setName(value)
+        if (!controlName(value) && String(value) !== '') {
+          setWrong(true)
+        }
+        value === '' ? setNameTouched(true) : setNameTouched(false)
         break
       case 'number':
+        value === '' ? setNumberTouched(true) : setNumberTouched(false)
+        break
+      default:
+        return
+    }
+  }
+  const handleChange = (e) => {
+    const { name, value } = e.target
+
+    switch (name) {
+      case 'name':
+        if (controlName(value)) {
+          setWrong(false)
+        }
+
+        setNameTouched(false)
+        setName(value)
+        break
+
+      case 'number':
+        setNumberTouched(false)
         setNumber(value)
         break
       default:
         return
     }
   }
-  // useEffect(() => {
-  //   const isCorrectName = (data) => {
-  //     const dataArr = data.split('')
-  //     // console.log(dataArr)
-  //     const wrongData = dataArr.map((el) => {
-  //       console.log(el.charCodeAt())
-  //       // if (data.charCodeAt() >= 33 && data.charCodeAt() <= 64) {
-  //       //   setNameError('Only letters allowed')
-  //       //   console.log(true)
-  //       // }
-  //       if (el.charCodeAt() <= 64 && el.charCodeAt() >= 33) {
-  //         //&& el.charCodeAt() >= 33
 
-  //         console.log(true)
-  //         setError('Only letters allowed')
-  //       }
-  //     })
-  //     return toast.error(`${data} is wrong. Try again`)
-  //   }
-  // })
-  // const correctName = (name) => {
-  //   if (name) {
-  //     const data = name.split('')
-  //     console.log('data', data)
-  //   }
-  // }
-  // correctName()
   const handleSubmit = (e) => {
     e.preventDefault()
 
@@ -68,7 +70,7 @@ export default function ContactForm({ onSubmit, nameError, numberError }) {
   return (
     <>
       <form onSubmit={handleSubmit} className="form">
-        <label className="form__label">
+        <label className="form__label error__word">
           {nameError && <p className="error__word">Error</p>}
           <input
             autoComplete="off"
@@ -76,12 +78,24 @@ export default function ContactForm({ onSubmit, nameError, numberError }) {
             type="text"
             name="name"
             value={name}
+            onBlur={(e) => blureHandler(e)}
             onChange={handleChange}
             placeholder="Name"
             // pattern="^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$"
-            // required
           ></input>
-          {nameError && <p className="error__message">{nameError}</p>}
+          {nameTuched && (
+            <ErrorComponent children={errorMesssage()} />
+            // <>
+            //   <p className="error__message">{errorMesssage()}</p>
+            // </>
+          )}
+          {wrong && <ErrorComponent children={'Only letters allowed'} />}
+          {nameError && (
+            <>
+              <ErrorComponent children={errorMesssage()} />
+              {/* <img alt="" src={errorImg} className="error__img" /> */}
+            </>
+          )}
         </label>
 
         <label className="form__label">
@@ -92,15 +106,31 @@ export default function ContactForm({ onSubmit, nameError, numberError }) {
             type="tel"
             name="number"
             value={number}
+            onBlur={(e) => blureHandler(e)}
             onChange={handleChange}
             placeholder="Number"
             // pattern="\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}"
-            // required
           ></input>
-          {numberError && <p className="error__message">{numberError}</p>}
+          {numberTuched && <ErrorComponent children={errorMesssage()} />}
+          {numberError && (
+            <>
+              <ErrorComponent children={errorMesssage()} />
+              <img alt="" src={errorImg} className="error__img" />
+            </>
+          )}
+          {quantityNumberError && (
+            <>
+              <ErrorComponent children={'Should contain 12 characters'} />
+            </>
+          )}
         </label>
-        <button type="submit" className="form__button">
-          Order &#8594;
+        <button
+          type="submit"
+          disabled={!name || !number}
+          className="button__submit button"
+        >
+          Order
+          <img alt="" src={rightArrow} className="button__arrow-img" />
         </button>
       </form>
     </>
@@ -109,3 +139,61 @@ export default function ContactForm({ onSubmit, nameError, numberError }) {
 ContactForm.propTypes = {
   onSubmit: PropTypes.func.isRequired,
 }
+// useEffect(() => {
+//   const isCorrectName = (data) => {
+//     const dataArr = data.split('')
+//     // console.log(dataArr)
+//     const wrongData = dataArr.map((el) => {
+//       console.log(el.charCodeAt())
+//       // if (data.charCodeAt() >= 33 && data.charCodeAt() <= 64) {
+//       //   setNameError('Only letters allowed')
+//       //   console.log(true)
+//       // }
+//       if (el.charCodeAt() <= 64 && el.charCodeAt() >= 33) {
+//         //&& el.charCodeAt() >= 33
+
+//         console.log(true)
+//         setError('Only letters allowed')
+//       }
+//     })
+//     return toast.error(`${data} is wrong. Try again`)
+//   }
+// })
+// const correctName = (name) => {
+//   if (name) {
+//     const data = name.split('')
+//     console.log('data', data)
+//   }
+// }
+// correctName()
+// {/* <label className="form__label error__word">
+//         {nameError ? (
+//           <>
+//             <p className="error__word">Error</p>
+//             <input
+//               autoComplete="off"
+//               className="form__input"
+//               type="text"
+//               name="name"
+//               value={name}
+//               onBlur={(e) => blureHandler(e)}
+//               onChange={handleChange}
+//               placeholder="Name"
+//               // pattern="^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$"
+//             ></input>
+//             <p className="error__message">{nameError}</p>
+//           </>
+//         ) : (
+//           <input
+//             autoComplete="off"
+//             className="form__input"
+//             type="text"
+//             name="name"
+//             value={name}
+//             onChange={handleChange}
+//             placeholder="Name"
+//             // pattern="^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$"
+//           ></input>
+
+//         )}
+//       </label> */}
