@@ -1,8 +1,15 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import ErrorComponent from '../ErrorComponent/ErrorComponent'
 import PropTypes from 'prop-types'
 import rightArrow from '../../images/arrow-right.png'
-import errorImg from '../../images/error.png'
+
+import {
+  controlName,
+  controlNumber,
+  errorMesssage,
+  charactersQuantity,
+} from '../../FunctionServises/CorrectValue'
+import ErrorImg from '../ErrorImg'
 
 export default function ContactForm({ ...props }) {
   const { onSubmit, nameError, numberError, quantityNumberError } = props
@@ -10,40 +17,64 @@ export default function ContactForm({ ...props }) {
   const [number, setNumber] = useState('')
   const [nameTuched, setNameTouched] = useState(false)
   const [numberTuched, setNumberTouched] = useState(false)
-  const [wrong, setWrong] = useState(false)
 
-  const errorMesssage = () => 'This field in required'
-  const controlName = (value) => {
-    const res =
-      /^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$/.test(
-        String(value)
-      )
-    return res
-  }
+  const [wrongName, setWrongName] = useState(false)
+  const [wrongNumber, setWrongNumber] = useState(false)
+  const [isEmptyName, setIsEmptyName] = useState(true)
+  const [isEmptyNumber, setIsEmptyNumber] = useState(true)
+  const [numberCharacters, setNumberCharacters] = useState(false)
+  const [className, setClassName] = useState('form__input')
+  const [classNumber, setClassNumber] = useState('form__input')
+  const inputStyle = 'form__input'
+  const inputError = 'error__input'
+  // console.log(isEmptyName, 'isEmptyName')
+
   const blureHandler = (e) => {
     const { name, value } = e.target
-
     switch (name) {
       case 'name':
-        if (!controlName(value) && String(value) !== '') {
-          setWrong(true)
+        // && String(value) !== ''
+        if (!controlName(value)) {
+          setWrongName(true)
+          setClassName(inputError)
         }
-        value === '' ? setNameTouched(true) : setNameTouched(false)
+        //
+        value === '' && nameError
+          ? setNameTouched(true) && setClassName(inputError)
+          : setNameTouched(false)
         break
+
       case 'number':
-        value === '' ? setNumberTouched(true) : setNumberTouched(false)
+        if (!controlNumber(value) && value !== '') {
+          setWrongNumber(true) //only numbers
+          setClassNumber(inputError)
+        }
+        if (charactersQuantity(value, 12) === false) {
+          setNumberCharacters(true) //12characters
+          setClassNumber(inputError)
+        }
+
+        value === '' && numberError !== true
+          ? setNumberTouched(true)
+          : setNumberTouched(false)
         break
       default:
         return
     }
   }
+
   const handleChange = (e) => {
     const { name, value } = e.target
 
     switch (name) {
       case 'name':
-        if (controlName(value)) {
-          setWrong(false)
+        if (value) {
+          setIsEmptyName(false)
+        }
+
+        if (controlName(value) && value) {
+          setClassName(inputStyle)
+          setWrongName(false)
         }
 
         setNameTouched(false)
@@ -51,6 +82,17 @@ export default function ContactForm({ ...props }) {
         break
 
       case 'number':
+        if (value) {
+          setClassName(inputStyle)
+          setIsEmptyNumber(false)
+        }
+        if (controlNumber(value)) {
+          setWrongNumber(false)
+        }
+        if (charactersQuantity(value, 12) === true) {
+          setClassNumber(inputStyle)
+          setNumberCharacters(false)
+        }
         setNumberTouched(false)
         setNumber(value)
         break
@@ -71,64 +113,76 @@ export default function ContactForm({ ...props }) {
     <>
       <form onSubmit={handleSubmit} className="form">
         <label className="form__label error__word">
-          {nameError && <p className="error__word">Error</p>}
+          {nameError && isEmptyName && <p className="error__word">Error</p>}
           <input
             autoComplete="off"
-            className="form__input"
+            className={className}
             type="text"
             name="name"
             value={name}
             onBlur={(e) => blureHandler(e)}
             onChange={handleChange}
             placeholder="Name"
-            // pattern="^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$"
           ></input>
           {nameTuched && (
-            <ErrorComponent children={errorMesssage()} />
-            // <>
-            //   <p className="error__message">{errorMesssage()}</p>
-            // </>
-          )}
-          {wrong && <ErrorComponent children={'Only letters allowed'} />}
-          {nameError && (
             <>
               <ErrorComponent children={errorMesssage()} />
-              {/* <img alt="" src={errorImg} className="error__img" /> */}
+              <ErrorImg errorClass={'error__img--name error__img'} />
+            </>
+          )}
+          {nameError && isEmptyName ? (
+            <>
+              <ErrorComponent children={errorMesssage()} />
+              <ErrorImg errorClass={'error__img--name error__img'} />
+            </>
+          ) : null}
+
+          {wrongName && (
+            <>
+              <ErrorComponent children={'Only letters allowed'} />
+              <ErrorImg errorClass={'error__img--name error__img'} />
             </>
           )}
         </label>
 
         <label className="form__label">
-          {numberError && <p className="error__word">Error</p>}
+          {numberError && isEmptyNumber && <p className="error__word">Error</p>}
           <input
             autoComplete="off"
-            className="form__input"
+            className={classNumber}
+            // style={{
+            //   outlineColor:
+            //     numberError && isEmptyNumber === true
+            //       ? '#e43f3f'
+            //       : '0.4px solid rgba(0, 0, 0, 0.5)',
+            // }}
             type="tel"
             name="number"
             value={number}
             onBlur={(e) => blureHandler(e)}
             onChange={handleChange}
             placeholder="Number"
-            // pattern="\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}"
           ></input>
           {numberTuched && <ErrorComponent children={errorMesssage()} />}
-          {numberError && (
+          {numberError && isEmptyNumber && (
             <>
               <ErrorComponent children={errorMesssage()} />
-              <img alt="" src={errorImg} className="error__img" />
+              <ErrorImg errorClass={'error__img--number error__img'} />
             </>
           )}
-          {quantityNumberError && (
+
+          {wrongNumber && (
             <>
-              <ErrorComponent children={'Should contain 12 characters'} />
+              <ErrorComponent children={'Only numbers allowed'} />
             </>
           )}
+
+          {quantityNumberError === true || numberCharacters === true ? (
+            <ErrorComponent children={'Should contain 12 characters'} />
+          ) : null}
         </label>
-        <button
-          type="submit"
-          disabled={!name || !number}
-          className="button__submit button"
-        >
+
+        <button type="submit" className="button__submit button">
           Order
           <img alt="" src={rightArrow} className="button__arrow-img" />
         </button>
@@ -138,62 +192,7 @@ export default function ContactForm({ ...props }) {
 }
 ContactForm.propTypes = {
   onSubmit: PropTypes.func.isRequired,
+  nameError: PropTypes.bool,
+  numberError: PropTypes.bool,
+  quantityNumberError: PropTypes.bool,
 }
-// useEffect(() => {
-//   const isCorrectName = (data) => {
-//     const dataArr = data.split('')
-//     // console.log(dataArr)
-//     const wrongData = dataArr.map((el) => {
-//       console.log(el.charCodeAt())
-//       // if (data.charCodeAt() >= 33 && data.charCodeAt() <= 64) {
-//       //   setNameError('Only letters allowed')
-//       //   console.log(true)
-//       // }
-//       if (el.charCodeAt() <= 64 && el.charCodeAt() >= 33) {
-//         //&& el.charCodeAt() >= 33
-
-//         console.log(true)
-//         setError('Only letters allowed')
-//       }
-//     })
-//     return toast.error(`${data} is wrong. Try again`)
-//   }
-// })
-// const correctName = (name) => {
-//   if (name) {
-//     const data = name.split('')
-//     console.log('data', data)
-//   }
-// }
-// correctName()
-// {/* <label className="form__label error__word">
-//         {nameError ? (
-//           <>
-//             <p className="error__word">Error</p>
-//             <input
-//               autoComplete="off"
-//               className="form__input"
-//               type="text"
-//               name="name"
-//               value={name}
-//               onBlur={(e) => blureHandler(e)}
-//               onChange={handleChange}
-//               placeholder="Name"
-//               // pattern="^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$"
-//             ></input>
-//             <p className="error__message">{nameError}</p>
-//           </>
-//         ) : (
-//           <input
-//             autoComplete="off"
-//             className="form__input"
-//             type="text"
-//             name="name"
-//             value={name}
-//             onChange={handleChange}
-//             placeholder="Name"
-//             // pattern="^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$"
-//           ></input>
-
-//         )}
-//       </label> */}

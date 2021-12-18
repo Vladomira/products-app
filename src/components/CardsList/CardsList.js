@@ -41,13 +41,14 @@ export default function CardsList({ products, openModal }) {
   }, [data])
 
   return (
-    <section className="cards__section">
+    <section className="card-set__section">
       <Container>
-        <ul className="cards__list list">
+        <h2 className="visually-hidden">Cards-set</h2>
+        <ul className="card-set__list list">
           {data &&
             data.map(({ name, category, price }) => {
               return (
-                <li key={shortid()} className="cards__item">
+                <li key={shortid()} className="card-set__item">
                   <CardItem
                     name={name}
                     category={category}

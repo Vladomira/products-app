@@ -35,6 +35,14 @@
 
     color: #e43f3f;
   }
+  &__input {
+    width: 256px;
+    padding: 16px;
+    border-radius: 16px;
+    border-color: transparent;
+    outline: 0.4px solid #e43f3f;
+  }
+
   &__word {
     font-size: 24px;
     line-height: 1.17;
@@ -43,10 +51,18 @@
     color: #000000;
   }
   &__img {
-    display: inline-block;
+    position: absolute;
+    display: block;
     width: 24px;
     height: 24px;
-    margin-left: 85%;
-    // margin-top: -86px;
+    &--name {
+      right: 70px;
+      top: 46.5%;
+    }
+
+    &--number {
+      right: 70px;
+      top: 64.5%;
+    }
   }
 }

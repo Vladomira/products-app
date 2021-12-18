@@ -1,16 +1,15 @@
-import { useState, useEffect, lazy, Suspense } from 'react'
+import { useState, Suspense } from 'react'
 import { toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
-import Container from './Container/Container'
+// import Container from './Container/Container'
 import CardsPageView from '../views/CardsPageView'
 import Modal from './modalBox/Modal'
 import ModalCard from './modalBox/ModalCard'
 import ContactForm from './ContactForm.js/ContactForm'
 import Notification from './Notification/Notification'
+import { charactersQuantity } from '../FunctionServises/CorrectValue'
 import '../styles/index.scss'
-// const ProductsList = lazy(() => {
-//   import('./Products/ProductsList')
-// })
+
 function App() {
   const [showModal, setShowModal] = useState(false)
   const [selectedProduct, setSelectedProduct] = useState({})
@@ -19,20 +18,13 @@ function App() {
   const [quantityNumberError, setQuantityNumberError] = useState(false)
   const [userData, setUserData] = useState({ name: '', number: '' })
 
-  const charactersQuantity = (number, quantity, setError) => {
-    if (number.length < quantity || number.length > quantity) {
-      toast.error('Please type corrrect number')
-      setError(true)
-      return
-    } else {
-      setError(false)
-      // return
-    }
-  }
-  // console.log(quantityNumberError, 'bef')
   const submitForm = (name, number) => {
+    if (!name && !number) {
+      setNameError(true)
+      setNumberError(true)
+    }
     if (!name) {
-      setNameError('This field in required')
+      setNameError(true)
       return
     }
     if (!number) {
@@ -40,22 +32,34 @@ function App() {
       return
     }
 
-    charactersQuantity(number, 12, setQuantityNumberError)
-    //&& quantityNumberError === false
-    // console.log(quantityNumberError, 'after')
-    if (!nameError && !numberError) {
+    if (!number && name) {
+      setNumberError(true)
+    }
+    if (!name && number) {
+      setNameError(true)
+    }
+
+    if (charactersQuantity(number, 12) === false) {
+      setQuantityNumberError(true)
+    }
+    if (charactersQuantity(number, 12) === true) {
+      setQuantityNumberError(false)
+    }
+
+    // if (
+    //   numberError !== true &&
+    //   nameError !== true &&
+    //   quantityNumberError !== true
+    // ) {
+
+    if (!numberError && !nameError) {
       setUserData({ name, number })
       toast.success(`${name} and ${number} are registered`)
       console.log('Name:', name)
       console.log('Number:', number)
     }
-
-    // reset()
   }
-  // const reset = () => {
-  //   setNameError(false)
-  //   setNumberError(false)
-  // }
+
   const toggleModal = (prop) => {
     setShowModal(!showModal)
     setSelectedProduct(prop)
@@ -63,7 +67,6 @@ function App() {
 
   return (
     <>
-      {/* <Container> */}
       <Suspense fallback={<p>Loading...</p>}>
         <CardsPageView openModal={toggleModal} />
         {showModal && (
@@ -79,7 +82,6 @@ function App() {
         )}
         <Notification />
       </Suspense>
-      {/* </Container> */}
     </>
   )
 }

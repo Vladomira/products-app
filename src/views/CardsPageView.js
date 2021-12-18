@@ -1,4 +1,4 @@
-import { useState, useEffect, lazy, Suspense } from 'react'
+import { useState, useEffect, Suspense } from 'react'
 import fetchProducts from '../servises/FetchProducts'
 import CardsList from '../components/CardsList/CardsList'
 
