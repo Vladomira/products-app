@@ -56,13 +56,29 @@
     width: 24px;
     height: 24px;
     &--name {
-      right: 70px;
       top: 46.5%;
     }
 
     &--number {
-      right: 70px;
       top: 64.5%;
+    }
+  }
+}
+@media screen and(max-width:767px) {
+  .error__img {
+    &--name {
+      right: 22%;
+    }
+
+    &--number {
+      right: 22%;
+    }
+  }
+}
+@media screen and(min-width:768px) {
+  .error {
+    &__img {
+      right: 23%;
     }
   }
 }
