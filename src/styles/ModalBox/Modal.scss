@@ -12,8 +12,8 @@
   }
   &__box {
     position: absolute;
-    max-width: 384px;
-    width: 100vw;
+    // max-width: 384px;
+    // width: 100vw;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
@@ -24,7 +24,7 @@
 }
 @media screen and(max-width:767px) {
   .modal__box {
-    max-width: 384px;
-    width: 100vw;
+    max-width: 320px;
+    // width: 100vw;
   }
 }

@@ -32,30 +32,26 @@ export default function ContactForm({ ...props }) {
 
   const blureHandler = (e) => {
     const { name, value } = e.target
-    // setClassName(inputStyle)
-    // setClassNumber(inputStyle)
-    // setWrongName(false)
-    // setWrongNumber(false)
-    // setNumberCharacters(false)
 
     switch (name) {
       case 'name':
         if (!controlName(value) && String(value) !== '') {
           //если не совпадает велью и не пустая строка, то "ин реквайерд"
+          setIsEmptyName(false)
           setWrongName(true)
           setClassName(inputError)
         }
 
         //условие, чтоб не двоилось "ин реквайерд"
-        value === '' && !nameError
-          ? setNameTouched(true)
-          : setNameTouched(false)
+        // value === '' && !nameError
+        value === '' ? setNameTouched(true) : setNameTouched(false)
         value === '' ? setClassName(inputError) : setClassName(inputStyle)
         break
 
       case 'number':
         // если некорректные данные и при этом инпут не пустой
         if (!controlNumber(value) && value !== '') {
+          setIsEmptyNumber(false)
           setWrongNumber(true)
           setClassNumber(inputError)
         }
@@ -64,10 +60,8 @@ export default function ContactForm({ ...props }) {
           setNumberCharacters(true) //12characters
           setClassNumber(inputError)
         }
-
-        value === '' && !numberError
-          ? setNumberTouched(true)
-          : setNumberTouched(false)
+        // && !numberError
+        value === '' ? setNumberTouched(true) : setNumberTouched(false)
         value === '' ? setClassNumber(inputError) : setClassNumber(inputStyle)
         break
       default:
@@ -77,14 +71,16 @@ export default function ContactForm({ ...props }) {
 
   const handleChange = (e) => {
     const { name, value } = e.target
+
     setClassName(inputStyle)
     setClassNumber(inputStyle)
     setWrongName(false)
     setWrongNumber(false)
     setNumberCharacters(false)
+
     switch (name) {
       case 'name':
-        if (value) {
+        if (value !== '') {
           setIsEmptyName(false)
         }
         setNameTouched(false)
@@ -108,19 +104,18 @@ export default function ContactForm({ ...props }) {
 
   const handleSubmit = (e) => {
     e.preventDefault()
+
     if (
       !wrongName &&
       !wrongNumber &&
       !numberCharacters &&
       !nameTouched &&
       !numberTouched
-      // !nameError &&
-      // !numberError
     ) {
       onSubmit(name, number)
+      setName('')
+      setNumber('')
     }
-    setName('')
-    setNumber('')
   }
 
   return (
@@ -167,10 +162,9 @@ export default function ContactForm({ ...props }) {
             autoComplete="off"
             className={classNumber}
             // style={{
-            //   outlineColor:
-            //     numberError && isEmptyNumber === true
-            //       ? '#e43f3f'
-            //       : '0.4px solid rgba(0, 0, 0, 0.5)',
+            //   outlineColor: numberError
+            //     ? '#e43f3f'
+            //     : '0.4px solid rgba(0, 0, 0, 0.5)',
             // }}
             type="tel"
             name="number"
