@@ -1,5 +1,6 @@
+import PropTypes from 'prop-types'
+
 export default function CardItem({ name, category, price, onClick }) {
-  // console.log('ALL:', name, category, price)
   return (
     <div className="info__box">
       <p className="info__category">{category}</p>
@@ -20,11 +21,10 @@ export default function CardItem({ name, category, price, onClick }) {
     </div>
   )
 }
-// {/* <div>
-// <p className="modal-box__category">{category}</p>
-// <p className="modal-box__name">{name}</p>
-// <p className="price__box">
-//   <span className="price__sign">&#36;</span>
-//   <span className="price__worth">{price}</span>
-// </p>
-// </div> */}
+CardItem.propTypes = {
+  name: PropTypes.string,
+  price: PropTypes.number,
+  category: PropTypes.string,
+
+  onClick: PropTypes.func,
+}

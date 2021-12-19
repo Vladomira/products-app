@@ -15,48 +15,60 @@ export default function ContactForm({ ...props }) {
   const { onSubmit, nameError, numberError, quantityNumberError } = props
   const [name, setName] = useState('')
   const [number, setNumber] = useState('')
-  const [nameTuched, setNameTouched] = useState(false)
-  const [numberTuched, setNumberTouched] = useState(false)
+  const [nameTouched, setNameTouched] = useState(false)
+  const [numberTouched, setNumberTouched] = useState(false)
 
-  const [wrongName, setWrongName] = useState(false)
+  const [wrongName, setWrongName] = useState(false) //onlyLetters
   const [wrongNumber, setWrongNumber] = useState(false)
+
   const [isEmptyName, setIsEmptyName] = useState(true)
   const [isEmptyNumber, setIsEmptyNumber] = useState(true)
+
   const [numberCharacters, setNumberCharacters] = useState(false)
   const [className, setClassName] = useState('form__input')
   const [classNumber, setClassNumber] = useState('form__input')
   const inputStyle = 'form__input'
   const inputError = 'error__input'
-  // console.log(isEmptyName, 'isEmptyName')
 
   const blureHandler = (e) => {
     const { name, value } = e.target
+    // setClassName(inputStyle)
+    // setClassNumber(inputStyle)
+    // setWrongName(false)
+    // setWrongNumber(false)
+    // setNumberCharacters(false)
+
     switch (name) {
       case 'name':
-        // && String(value) !== ''
-        if (!controlName(value)) {
+        if (!controlName(value) && String(value) !== '') {
+          //если не совпадает велью и не пустая строка, то "ин реквайерд"
           setWrongName(true)
           setClassName(inputError)
         }
-        //
-        value === '' && nameError
-          ? setNameTouched(true) && setClassName(inputError)
+
+        //условие, чтоб не двоилось "ин реквайерд"
+        value === '' && !nameError
+          ? setNameTouched(true)
           : setNameTouched(false)
+        value === '' ? setClassName(inputError) : setClassName(inputStyle)
         break
 
       case 'number':
+        // если некорректные данные и при этом инпут не пустой
         if (!controlNumber(value) && value !== '') {
-          setWrongNumber(true) //only numbers
+          setWrongNumber(true)
           setClassNumber(inputError)
         }
+        // double:
         if (charactersQuantity(value, 12) === false) {
           setNumberCharacters(true) //12characters
           setClassNumber(inputError)
         }
 
-        value === '' && numberError !== true
+        value === '' && !numberError
           ? setNumberTouched(true)
           : setNumberTouched(false)
+        value === '' ? setClassNumber(inputError) : setClassNumber(inputStyle)
         break
       default:
         return
@@ -65,36 +77,29 @@ export default function ContactForm({ ...props }) {
 
   const handleChange = (e) => {
     const { name, value } = e.target
-
+    setClassName(inputStyle)
+    setClassNumber(inputStyle)
+    setWrongName(false)
+    setWrongNumber(false)
+    setNumberCharacters(false)
     switch (name) {
       case 'name':
         if (value) {
           setIsEmptyName(false)
         }
-
-        if (controlName(value) && value) {
-          setClassName(inputStyle)
-          setWrongName(false)
-        }
-
         setNameTouched(false)
         setName(value)
+
         break
 
       case 'number':
         if (value) {
-          setClassName(inputStyle)
+          // setClassName(inputStyle)
           setIsEmptyNumber(false)
-        }
-        if (controlNumber(value)) {
-          setWrongNumber(false)
-        }
-        if (charactersQuantity(value, 12) === true) {
-          setClassNumber(inputStyle)
-          setNumberCharacters(false)
         }
         setNumberTouched(false)
         setNumber(value)
+
         break
       default:
         return
@@ -103,8 +108,17 @@ export default function ContactForm({ ...props }) {
 
   const handleSubmit = (e) => {
     e.preventDefault()
-
-    onSubmit(name, number)
+    if (
+      !wrongName &&
+      !wrongNumber &&
+      !numberCharacters &&
+      !nameTouched &&
+      !numberTouched
+      // !nameError &&
+      // !numberError
+    ) {
+      onSubmit(name, number)
+    }
     setName('')
     setNumber('')
   }
@@ -124,12 +138,14 @@ export default function ContactForm({ ...props }) {
             onChange={handleChange}
             placeholder="Name"
           ></input>
-          {nameTuched && (
+
+          {nameTouched && (
             <>
               <ErrorComponent children={errorMesssage()} />
               <ErrorImg errorClass={'error__img--name error__img'} />
             </>
           )}
+
           {nameError && isEmptyName ? (
             <>
               <ErrorComponent children={errorMesssage()} />
@@ -163,7 +179,14 @@ export default function ContactForm({ ...props }) {
             onChange={handleChange}
             placeholder="Number"
           ></input>
-          {numberTuched && <ErrorComponent children={errorMesssage()} />}
+
+          {numberTouched && (
+            <>
+              <ErrorComponent children={errorMesssage()} />
+              <ErrorImg errorClass={'error__img--name error__img'} />
+            </>
+          )}
+
           {numberError && isEmptyNumber && (
             <>
               <ErrorComponent children={errorMesssage()} />
@@ -196,3 +219,21 @@ ContactForm.propTypes = {
   numberError: PropTypes.bool,
   quantityNumberError: PropTypes.bool,
 }
+
+// для телефона при вводе:
+// если были удалены неправильные символы из поля исчезает нотификашка ошибки
+// if (controlName(value) && value) {
+//   setClassName(inputStyle)
+//   setWrongName(false)
+// }
+
+// для номера при вводе:
+// если были удалены неправильные символы из поля исчезает нотификашка ошибки
+// if (controlNumber(value)) {
+//   setWrongNumber(false)
+// }
+// если количество символов изменилось на правильное
+// if (charactersQuantity(value, 12) === true) {
+//   setClassNumber(inputStyle)
+//   setNumberCharacters(false)
+// }

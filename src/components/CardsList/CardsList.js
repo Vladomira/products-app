@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import PropTypes from 'prop-types'
 import CardItem from './CardItem'
 import Container from '../Container/Container'
 const shortid = require('shortid')
@@ -69,4 +70,13 @@ export default function CardsList({ products, openModal }) {
       </Container>
     </section>
   )
+}
+CardsList.propTypes = {
+  product: PropTypes.shape({
+    name: PropTypes.string,
+    category: PropTypes.string,
+    price: PropTypes.number,
+    onClick: PropTypes.func,
+  }),
+  openModal: PropTypes.func,
 }

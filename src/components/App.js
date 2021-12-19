@@ -1,7 +1,6 @@
 import { useState, Suspense } from 'react'
 import { toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
-// import Container from './Container/Container'
 import CardsPageView from '../views/CardsPageView'
 import Modal from './modalBox/Modal'
 import ModalCard from './modalBox/ModalCard'
@@ -23,21 +22,6 @@ function App() {
       setNameError(true)
       setNumberError(true)
     }
-    if (!name) {
-      setNameError(true)
-      return
-    }
-    if (!number) {
-      setNumberError(true)
-      return
-    }
-
-    if (!number && name) {
-      setNumberError(true)
-    }
-    if (!name && number) {
-      setNameError(true)
-    }
 
     if (charactersQuantity(number, 12) === false) {
       setQuantityNumberError(true)
@@ -46,13 +30,7 @@ function App() {
       setQuantityNumberError(false)
     }
 
-    // if (
-    //   numberError !== true &&
-    //   nameError !== true &&
-    //   quantityNumberError !== true
-    // ) {
-
-    if (!numberError && !nameError) {
+    if (name && number && !quantityNumberError) {
       setUserData({ name, number })
       toast.success(`${name} and ${number} are registered`)
       console.log('Name:', name)
@@ -86,3 +64,17 @@ function App() {
   )
 }
 export default App
+// if (!number && name) {
+//   setNumberError(true)
+// }
+// if (!name && number) {
+//   setNameError(true)
+// }
+// if (!name) {
+//   setNameError(true)
+//   return
+// }
+// if (!number) {
+//   setNumberError(true)
+//   return
+// }

@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types'
 export default function ModalCard({ product }) {
   const { name, category, price } = product
   return (
@@ -10,4 +11,12 @@ export default function ModalCard({ product }) {
       </p>
     </div>
   )
+}
+ModalCard.propTypes = {
+  product: PropTypes.shape({
+    name: PropTypes.string,
+    category: PropTypes.string,
+    price: PropTypes.number,
+    onClick: PropTypes.func,
+  }),
 }
