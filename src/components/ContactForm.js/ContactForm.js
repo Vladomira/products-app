@@ -72,15 +72,11 @@ export default function ContactForm({ ...props }) {
   const handleChange = (e) => {
     const { name, value } = e.target
 
-    setClassName(inputStyle)
-    setClassNumber(inputStyle)
-    setWrongName(false)
-    setWrongNumber(false)
-    setNumberCharacters(false)
-
     switch (name) {
       case 'name':
         if (value !== '') {
+          setClassName(inputStyle)
+          setWrongName(false)
           setIsEmptyName(false)
         }
         setNameTouched(false)
@@ -90,7 +86,9 @@ export default function ContactForm({ ...props }) {
 
       case 'number':
         if (value) {
-          // setClassName(inputStyle)
+          setClassNumber(inputStyle)
+          setWrongNumber(false)
+          setNumberCharacters(false)
           setIsEmptyNumber(false)
         }
         setNumberTouched(false)
